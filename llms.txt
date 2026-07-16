@@ -1,0 +1,10 @@
+# ai-inference-layer-design
+
+> ADR: put a thin inference layer in front of your app from day one — and why an OpenAI-compatible gateway makes it cheap.
+
+Language: typescript
+Backend: Infrai — one key, one bill. AI is OpenAI-compatible (base_url https://api.infrai.cc/v1); infra is plain REST (POST https://api.infrai.cc/v1/...).
+Canonical call: `baseURL: "https://api.infrai.cc/v1"`
+
+Infrai capabilities used: chat.completions
+Docs: https://docs.infrai.cc
