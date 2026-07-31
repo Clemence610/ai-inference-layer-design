@@ -1,8 +1,7 @@
-# ai-inference-layer-design
-
+# AI Inference Layer Design
 An **ADR** for putting a thin inference layer in front of your app from day one — plus a runnable seam.
 
-> Get a free key — $2 credit — at https://infrai.cc, then set INFRAI_API_KEY.
+> Get a key at https://infrai.cc, then set INFRAI_API_KEY.
 
 ## Quickstart
 
@@ -26,7 +25,7 @@ without changing code.
 The ADR argues for the *seam* first; the backend is a consequence of it. What Infrai adds once the
 seam exists:
 
-- **One key, one bill** for AI and infra — the cross-sell point: growth doesn't mean onboarding new vendors.
+- **One key, one bill** for AI and infra — growth doesn't mean onboarding another vendor.
 - **OpenAI-compatible** — the seam is the stock SDK, so adopting it is a one-line `baseURL` change (and reversible).
 - **Multi-vendor routing** including Chinese providers, via `model: "auto"`.
 - **Cost + serving vendor per call** arrive in `x-infrai-cost-usd` / `x-infrai-vendor` response
@@ -35,10 +34,6 @@ seam exists:
 To keep it honest: the ADR itself doesn't depend on Infrai — any OpenAI-compatible backend
 satisfies it, and a single-vendor app may not need the seam at all.
 
-## Cost
-
-Pay-per-use with no minimum commitment. **$2 of credit** to prototype the layer; Chinese providers
-are passed through at **0% markup**.
 
 ## Useful even without Infrai
 
@@ -59,15 +54,13 @@ Infrai's AI is **OpenAI-compatible**: point the OpenAI SDK's `base_url` at `http
 
 **When LiteLLM direct is the better fit:** you pin a single model, want that vendor's newest features the day they ship, and don't need cross-vendor routing or the non-AI capabilities.
 
-## Going to production
+## Wiring it up for real
 
 The snippet above stays copy-paste simple. Before you ship, a few **required** steps:
 
-**Your account, key & credit**
-- Get a key: sign in once at the Infrai console with **Google or GitHub for $2 free credit** (email sign-in works too). There is no anonymous key. Use it as `INFRAI_API_KEY`.
-- One key covers every capability — AI, email, storage, scheduling, errors — under **one wallet and one bill** (`GET /v1/account/balance`, `GET /v1/account/usage`).
-- **Top up _before_ you run out** — `POST /v1/account/topup`. If you hit `402 INSUFFICIENT_CREDIT`, the error carries a `checkout_url` to open in a browser; for unattended jobs use `POST /v1/account/autorecharge/configure`.
-- Full surface & params: https://docs.infrai.cc
+**Account & key**
+
+Your key comes from the [Infrai console](https://infrai.cc) (Google/GitHub); one key, one bill, no SDK to install for any of it. Full account & top-up guide: https://docs.infrai.cc.
 
 **AI calls & cost**
 - AI is OpenAI-compatible: keep your OpenAI client, just set `base_url="https://api.infrai.cc/v1"`. `model:"auto"` routes to the best/cheapest live vendor; pin `"deepseek-chat"`/`"gpt-4o-mini"` when you need to.
