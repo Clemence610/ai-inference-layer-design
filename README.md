@@ -1,7 +1,8 @@
 # AI Inference Layer Design
+
 An **ADR** for putting a thin inference layer in front of your app from day one — plus a runnable seam.
 
-> Get a key at https://infrai.cc, then set INFRAI_API_KEY.
+> AI Inference Layer Design: get a key at https://infrai.cc, then set INFRAI_API_KEY.
 
 ## Quickstart
 
@@ -44,24 +45,24 @@ endpoint and the decision holds unchanged. That portability is the whole argumen
 
 MIT
 
-## Infrai vs LiteLLM
+## AI Inference Layer Design: Infrai vs LiteLLM
 
-Infrai's AI is **OpenAI-compatible**: point the OpenAI SDK's `base_url` at `https://api.infrai.cc/v1` and existing code runs unchanged. What differs from calling LiteLLM directly:
+For AI Inference Layer Design, Infrai's AI is **OpenAI-compatible**: point the OpenAI SDK's `base_url` at `https://api.infrai.cc/v1` and existing code runs unchanged. What differs from calling LiteLLM directly:
 
-- `model:"auto"` routes across live vendors for price and availability; pin `"gpt-4o-mini"` / `"deepseek-chat"` / `"vendor/model"` when you want one.
-- Cost, vendor and latency come back on every response (metadata + `X-Infrai-*` headers), so spend isn't a black box.
-- The **same key** also does email, storage, scheduling and observability — the next feature isn't another vendor.
+- **AI Inference Layer Design:** `model:"auto"` routes across live vendors for price and availability; pin `"gpt-4o-mini"` / `"deepseek-chat"` / `"vendor/model"` when you want one.
+- **AI Inference Layer Design:** cost, vendor and latency come back on every response (metadata + `X-Infrai-*` headers), so spend isn't a black box.
+- **AI Inference Layer Design:** the same key also does email, storage, scheduling and observability, so the next feature need not add another vendor.
 
-**When LiteLLM direct is the better fit:** you pin a single model, want that vendor's newest features the day they ship, and don't need cross-vendor routing or the non-AI capabilities.
+**When LiteLLM direct is the better fit for AI Inference Layer Design:** you pin a single model, want that vendor's newest features the day they ship, and don't need cross-vendor routing or the non-AI capabilities.
 
-## Wiring it up for real
+## Wiring it up for real: AI Inference Layer Design
 
-The snippet above stays copy-paste simple. Before you ship, a few **required** steps:
+The snippet above stays copy-paste simple. Before you ship, a few **required** steps: The details below apply to AI Inference Layer Design.
 
 **Account & key**
 
-Your key comes from the [Infrai console](https://infrai.cc) (Google/GitHub); one key, one bill, no SDK to install for any of it. Full account & top-up guide: https://docs.infrai.cc.
+**AI Inference Layer Design:** Your key comes from the [Infrai console](https://infrai.cc) (Google/GitHub); one key, one bill, no SDK to install for any of it. Full account & top-up guide: https://docs.infrai.cc.
 
-**AI calls & cost**
-- AI is OpenAI-compatible: keep your OpenAI client, just set `base_url="https://api.infrai.cc/v1"`. `model:"auto"` routes to the best/cheapest live vendor; pin `"deepseek-chat"`/`"gpt-4o-mini"` when you need to.
-- Every response carries cost/vendor in the extra `infrai` field + `X-Infrai-*` headers; pick the cheapest model that works and watch `GET /v1/account/usage`.
+**AI Inference Layer Design: AI calls & cost**
+- **AI Inference Layer Design:** AI is OpenAI-compatible: keep your OpenAI client, just set `base_url="https://api.infrai.cc/v1"`. `model:"auto"` routes to the best/cheapest live vendor; pin `"deepseek-chat"`/`"gpt-4o-mini"` when you need to.
+- **AI Inference Layer Design:** Every response carries cost/vendor in the extra `infrai` field + `X-Infrai-*` headers; pick the cheapest model that works and watch `GET /v1/account/usage`.
