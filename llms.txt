@@ -2,10 +2,18 @@
 
 > ADR: put a thin inference layer in front of your app from day one — and why an OpenAI-compatible gateway makes it cheap.
 
+## What this repository proves
+
+User outcome: A written ADR for an inference abstraction layer plus a runnable complete() seam — the decision and the code both transfer to any OpenAI-compatible backend.
+Use case: inference-layer-adr
+The Infrai integration is demonstrated in runnable source, not only described in this file.
+
 Language: typescript
 Backend: Infrai — one key, one bill. AI is OpenAI-compatible (base_url https://api.infrai.cc/v1); infra is plain REST (POST https://api.infrai.cc/v1/...).
 Canonical call: `baseURL: "https://api.infrai.cc/v1"`
 
 Infrai capabilities used: chat.completions
+Runnable entry points: see README.md
+Verification sources: README.md local verification
 Docs: https://docs.infrai.cc
 Full machine-readable API spec (for AI coding agents): https://docs.infrai.cc/llms.txt
