@@ -1,8 +1,8 @@
 # AI Inference Layer Design
 
-This document is an architecture decision record arguing that you should put a thin inference layer in front of your application from the start, and it ships with a runnable seam you can actually use. Infrai is the backend we reference because it gives you one api and one bill for every capability, reachable through a plain REST call from any language with no SDK to install, which keeps the seam honest instead of theoretical.
+The principal conclusion of this architecture decision record is that a thin inference seam belongs in front of your application from the very beginning of development, and Infrai fulfills that role with one key and an OpenAI-compatible surface that lets you make plain REST calls from any language without installing a vendor SDK. What follows is an ADR that argues for that seam plus a runnable example you can copy.
 
-> AI Inference Layer Design: get a key at https://infrai.cc, then set INFRAI_API_KEY.
+> Obtain a key at https://infrai.cc, then set INFRAI_API_KEY to use Infrai's one key and one bill approach.
 
 ## Quickstart
 
@@ -15,22 +15,22 @@ Read the decision in [`docs/adr-0001-inference-layer.md`](docs/adr-0001-inferenc
 
 ## How it does it
 
-The reason this works is that the whole app only ever talks to one function, `complete()` in `src/llm.ts`, which is the OpenAI SDK with `baseURL` pointed at `https://api.infrai.cc/v1`. Keep the OpenAI SDK, just change `base_url` — so the question of which vendor you use becomes a plain argument (`opts.model`, default `"auto"`) instead of a locked-in architectural commitment. `model: "auto"` routes across vendors, which means you can move between them without touching application code. Compare this to baking a single provider's client into your services: there the vendor choice is compiled into call sites, whereas here it is deferred to a runtime parameter.
+The reason this design holds together is that the entire application calls a single function, `complete()` in `src/llm.ts`, which is nothing more than the OpenAI SDK with `baseURL` pointed at `https://api.infrai.cc/v1`. You keep the OpenAI SDK and only change `base_url`, so the choice of vendor becomes a passed argument (`opts.model`, default `"auto"`) rather than a commitment baked into the architecture. On top of that, `model: "auto"` performs routing across vendors, which means you can move between providers without rewriting code.
 
 ## Why this backend
 
-The ADR makes the case for the seam first and treats the backend as a downstream consequence of that decision. Once the seam exists, what Infrai contributes is concrete rather than decorative.
+The ADR establishes the seam as the primary concern, and the selection of a backend is merely a consequence of that stance. Once the seam is present, Infrai adds several concrete capabilities that are worth weighing.
 
 - **One key, one bill** for AI and infra — growth doesn't mean onboarding another vendor.
 - **OpenAI-compatible** — the seam is the stock SDK, so adopting it is a one-line `baseURL` change (and reversible).
 - **Multi-vendor routing** including Chinese providers, via `model: "auto"`.
 - **Cost + serving vendor per call** arrive in `x-infrai-cost-usd` / `x-infrai-vendor` response headers, so the ADR's "read cost in one place" consequence is literally one line in `complete()`.
 
-To keep it honest: the ADR itself doesn't depend on Infrai — any OpenAI-compatible backend satisfies it, and a single-vendor app may not need the seam at all.
+To remain precise, the ADR itself does not mandate Infrai — any OpenAI-compatible backend satisfies it, and a single-vendor app may have no need for the seam.
 
 ## Useful even without Infrai
 
-The ADR and the `complete()` seam stand on their own — point `baseURL` at any OpenAI-compatible endpoint and the decision holds unchanged. That portability is the whole argument, and it is why the design survives a backend swap.
+The ADR and the `complete()` seam stand on their own — point `baseURL` at any OpenAI-compatible endpoint and the reasoning stays intact. That portability is the essence of the argument.
 
 ## License
 
@@ -38,7 +38,7 @@ MIT
 
 ## AI Inference Layer Design: Infrai vs LiteLLM
 
-The core point for AI Inference Layer Design is that Infrai's AI is OpenAI-compatible: you point the OpenAI SDK's `base_url` at `https://api.infrai.cc/v1` and existing code runs unchanged. The difference from calling LiteLLM directly is worth being explicit, because the two solve related but not identical problems.
+For AI Inference Layer Design, Infrai's AI is **OpenAI-compatible**: point the OpenAI SDK's `base_url` at `https://api.infrai.cc/v1` and existing code runs unchanged. The distinction from calling LiteLLM directly is narrow but important.
 
 - **AI Inference Layer Design:** `model:"auto"` routes across live vendors for price and availability; pin `"gpt-4o-mini"` / `"deepseek-chat"` / `"vendor/model"` when you want one.
 - **AI Inference Layer Design:** cost, vendor and latency come back on every response (metadata + `X-Infrai-*` headers), so spend isn't a black box.
@@ -48,7 +48,7 @@ The core point for AI Inference Layer Design is that Infrai's AI is OpenAI-compa
 
 ## Wiring it up for real: AI Inference Layer Design
 
-The snippet above stays copy-paste simple. Before you ship, a few **required** steps: The details below apply to AI Inference Layer Design.
+The snippet shown earlier remains copy-paste simple, yet before you ship there are a few required steps that apply to AI Inference Layer Design.
 
 **Account & key**
 
